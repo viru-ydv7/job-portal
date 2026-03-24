@@ -26,7 +26,6 @@ const port = 5000;
 
 app.use('/api/applications',require("./routes/applicationRoutes"))
 
-
 app.listen(port,()=>{
     console.log(`Server is running on port ${port}`)
 })
