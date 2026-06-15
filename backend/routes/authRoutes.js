@@ -1,8 +1,20 @@
 const express = require('express');
 const router = express.Router();
 
-const { registerUser } = require('../controllers/authController');
-const { loginUser } = require('../controllers/authController');
-router.post('/register',registerUser);
-router.post('/login',loginUser);
+// const { registerUser } = require('../controllers/authController');
+const { loginCandidate,registerCandidate,loginRecruiter,createCompany, verifyCandidateOTP,resendCandidateOTP,verifyRecruiterOTP,resendRecruiterOTP , forgotCandidatePassword,verifyCandidateResetOTP,resetCandidatePassword,forgotRecruiterPassword, verifyRecruiterResetOTP, resetRecruiterPassword} = require('../controllers/authController');
+router.post('/candidate/login',loginCandidate);
+router.post('/candidate/register',registerCandidate);
+router.post('/recruiter/login',loginRecruiter);
+router.post('/create-company',createCompany);
+router.post('/candidate/verify-otp', verifyCandidateOTP);
+router.post('/candidate/resend-otp', resendCandidateOTP);
+router.post('/recruiter/verify-otp', verifyRecruiterOTP);
+router.post('/recruiter/resend-otp', resendRecruiterOTP);
+router.post('/candidate/forgot-password', forgotCandidatePassword);
+router.post('/candidate/verify-reset-otp', verifyCandidateResetOTP);
+router.post('/candidate/reset-password', resetCandidatePassword);
+router.post('/recruiter/forgot-password', forgotRecruiterPassword);
+router.post('/recruiter/verify-reset-otp', verifyRecruiterResetOTP);
+router.post('/recruiter/reset-password', resetRecruiterPassword);
 module.exports = router;

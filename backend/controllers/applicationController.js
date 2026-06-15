@@ -2,6 +2,11 @@ const Application = require('../models/Application');
 const Job = require('../models/Job');
 const upload = require ('../middlewares/upload');
 
+const extractText = require("../utils/extractText");
+const extractSkills = require("../utils/extractSkills");
+const analyzeResume = require("../utils/analyzeResume");
+
+
 const applyToJob = async (req,res)=>{
     try {
         
@@ -14,7 +19,13 @@ const applyToJob = async (req,res)=>{
             }
             )
         }
-        
+
+        if(!job.company){
+          return res.status(400).json({
+            success:false,
+            message:"Job does not have a company associated"
+          })
+        }
 
         const existingApplication = await Application.findOne({
             job:jobId,
@@ -26,11 +37,25 @@ const applyToJob = async (req,res)=>{
                 message:"You have already applied to this job"
             })
         }
+        let matchPercentage = 0;
+        if (req.file) {
 
+              const text = await extractText(req.file.path);
+
+              const userSkills = extractSkills(text);
+
+              const analysis = analyzeResume(
+                  userSkills,
+                  job.skills
+              );
+
+              matchPercentage = analysis.matchPercentage;
+        }
         const application = await Application.create({
             job: jobId,
             applicant: req.user._id,
-            resume: req.file ? req.file.path : null
+            resume: req.file ? req.file.path : null,
+            matchPercentage
         });
 
         return res.status(201).json({
@@ -58,13 +83,21 @@ const getApplicantsForJob = async (req,res)=>{
                 message:"Job not found"
             })
         }
-        if(job.createdBy.toString()!==req.user._id.toString()){
+        if(job.company.toString() !== req.user.company.toString()){
             return res.status(403).json({
                 success:false,
                 message:"Access denied"
             })
         }
-        const applications = await Application.find({job:jobId}).populate("applicant", "name email role").populate("job", "title location");
+        const applications = await Application.find({job:jobId}).sort({matchPercentage: -1}).populate("applicant", "name email role").populate("job", "title");
+
+        const rankedApplications =
+        applications.map(
+            (application, index) => ({
+                rank: index + 1,
+                ...application.toObject()
+            })
+        );
 
         return res.status(200).json({
             success:true,
@@ -103,7 +136,7 @@ const updateApplicationStatus = async (req, res) => {
     }
 
     // ownership check
-    if (application.job.createdBy.toString() !== req.user._id.toString()) {
+    if (application.job.company.toString() !== req.user.company.toString()) {
       return res.status(403).json({
         success: false,
         message: "Access denied"
@@ -157,11 +190,10 @@ const getMyApplications = async (req, res) => {
 };
 
 const getRecruiterJobs = async (req, res) => {
-    console.log("Recruiter jobs route hit");
+    // console.log("Recruiter jobs route hit");
   try {
 
-    const jobs = await Job.find({ createdBy: req.user._id })
-      .sort({ createdAt: -1 });
+    const jobs = await Job.find({ company: req.user.company }).sort({ createdAt: -1 });
 
     return res.status(200).json({
       success: true,

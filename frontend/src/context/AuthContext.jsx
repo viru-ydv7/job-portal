@@ -7,7 +7,6 @@ function AuthProvider({ children }) {
     const [user, setUser] = useState(() => {
         const storedUser = localStorage.getItem("user");
 
-        // 🚨 CRITICAL FIX
         if (!storedUser || storedUser === "undefined") {
             return null;
         }
@@ -24,15 +23,14 @@ function AuthProvider({ children }) {
         return storedToken || null;
     });
 
-    const login = (userData, jwtToken) => {
+    // ✅ FIXED HERE
+    const login = (token, userData) => {
+        setUser(userData);
+        setToken(token);
 
-    setUser(userData);
-    setToken(jwtToken);
-
-    localStorage.setItem("user", JSON.stringify(userData));
-    localStorage.setItem("token", jwtToken);
-};
-
+        localStorage.setItem("user", JSON.stringify(userData));
+        localStorage.setItem("token", token);
+    };
 
     const logout = () => {
         setUser(null);

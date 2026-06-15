@@ -12,7 +12,15 @@ import RecruiterDashboard from "./pages/RecruiterDashboard";
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Applicants from "./pages/Applicants";
-
+import AcceptInvite from "./pages/AcceptInvite";
+import RegisterCompany from "./pages/RegisterCompany";
+import RegisterChoice from "./pages/RegisterChoice";
+import SendInvite from "./pages/SendInvite";
+import VerifyOTP from "./pages/VerifyOTP";
+import ForgotPassword from "./pages/ForgotPassword";
+import VerifyResetOTP from "./pages/VerifyResetOTP";
+import ResetPassword from "./pages/ResetPassword";
+import EditJob from "./pages/EditJob";
 function App() {
   const { isAuthenticated } = useContext(AuthContext);
 
@@ -49,11 +57,28 @@ function App() {
           path="/register"
           element={
             !isAuthenticated
-              ? <Register />
+              ? <RegisterChoice />
+              : <Navigate to="/jobs" replace />
+          }
+        />
+        <Route
+          path="/register/company"
+          element={
+            !isAuthenticated
+              ? <RegisterCompany />
+              : <Navigate to="/jobs" replace />
+          }
+        />
+        <Route
+          path="/register/candidate"
+          element={
+            !isAuthenticated
+              ? <Register/>
               : <Navigate to="/jobs" replace />
           }
         />
 
+        
         {/* ✅ PROTECTED ROUTES */}
         <Route
           path="/jobs"
@@ -97,13 +122,24 @@ function App() {
             </ProtectedRoute>
           }
         />
+        
 
         
 
-      <Route
-  path="/recruiter/job/:id/applicants"
-  element={<Applicants />}
-/>
+        <Route path="/verify-otp" element={<VerifyOTP />} />
+        <Route path="/invites/send" element={<SendInvite />} />
+        <Route path="/invites/accept/:token" element={<AcceptInvite />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/verify-reset-otp" element={<VerifyResetOTP />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route
+        path="/jobs/edit/:id"
+        element={<EditJob />}
+    />
+        <Route
+    path="/recruiter/job/:id/applicants"
+    element={<Applicants />}
+  />
       </Routes>
 
       </div>

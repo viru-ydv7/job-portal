@@ -8,7 +8,7 @@ const applicationSchema = new mongoose.Schema({
     },
     applicant:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:'User',
+        ref:'Candidate',
         required:true,
     },
     status:{
@@ -17,8 +17,12 @@ const applicationSchema = new mongoose.Schema({
         default:'pending',
     },
     resume: {
-    type: String
-    }
+        e: String
+    },
+    matchPercentage: {
+        type: Number,
+        default: 0,
+},
 },
 {
     timestamps:true,

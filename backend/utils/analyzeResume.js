@@ -16,10 +16,10 @@ const analyzeResume = (userSkills, jobSkills) => {
   );
 
   return {
-    matched,
-    missing,
+    matchedSkills: matched,
+    missingSkills: missing,
     matchPercentage
-  };
+};
 };
 
 module.exports = analyzeResume;

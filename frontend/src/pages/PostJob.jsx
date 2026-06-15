@@ -12,6 +12,7 @@ const PostJob = () => {
         location: "",
         salary: "",
         jobType: "full-time",
+        skills: ""
     });
 
     const handleChange = (e) => {
@@ -25,11 +26,19 @@ const PostJob = () => {
         e.preventDefault();
 
         try {
+            const skillsArray = formData.skills
+                .split(",")
+                .map(skill => skill.trim())
+                .filter(skill => skill !== "");
 
-            const res = await axios.post("/jobs/create-job", formData);
+            const dataToSend = {
+                ...formData,
+                skills: skillsArray
+            };
+
+            await axios.post("/jobs/create-job", dataToSend);
 
             alert("Job created successfully");
-
             navigate("/recruiter/dashboard");
 
         } catch (error) {
@@ -39,70 +48,130 @@ const PostJob = () => {
     };
 
     return (
-        <div className="max-w-xl mx-auto mt-10">
+        <div className="min-h-screen bg-gradient-to-br from-white via-purple-50 to-gray-100 py-10 px-4">
 
-            <h2 className="text-2xl font-bold mb-6">Post a Job</h2>
+            <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl border border-purple-100 p-8">
 
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                {/* 🔥 HEADER */}
+                <div className="mb-6">
+                    <h2 className="text-3xl mb-5 font-bold text-purple-600">
+                        Post a New Job
+                    </h2>
+                    <p className="text-gray-500 mt-1">
+                        Fill in the details to attract the right candidates
+                    </p>
+                </div>
 
-                <input
-                    type="text"
-                    name="title"
-                    placeholder="Job Title"
-                    value={formData.title}
-                    onChange={handleChange}
-                    className="border p-2"
-                    required
-                />
+                <form onSubmit={handleSubmit} className="flex flex-col gap-5">
 
-                <textarea
-                    name="description"
-                    placeholder="Job Description"
-                    value={formData.description}
-                    onChange={handleChange}
-                    className="border p-2"
-                    required
-                />
+                    {/* TITLE */}
+                    <div>
+                        <label className="text-sm text-gray-600">Job Title</label>
+                        <input
+                            type="text"
+                            name="title"
+                            value={formData.title}
+                            onChange={handleChange}
+                            placeholder="e.g. Frontend Developer"
+                            className="w-full mt-1 p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-purple-500 outline-none"
+                            required
+                        />
+                    </div>
 
-                <input
-                    type="text"
-                    name="location"
-                    placeholder="Location"
-                    value={formData.location}
-                    onChange={handleChange}
-                    className="border p-2"
-                    required
-                />
+                    {/* DESCRIPTION */}
+                    <div>
+                        <label className="text-sm text-gray-600">Description</label>
+                        <textarea
+                            name="description"
+                            value={formData.description}
+                            onChange={handleChange}
+                            placeholder="Describe the role, responsibilities, etc."
+                            rows="4"
+                            className="w-full mt-1 p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-purple-500 outline-none"
+                            required
+                        />
+                    </div>
 
-                <input
-                    type="text"
-                    name="salary"
-                    placeholder="Salary"
-                    value={formData.salary}
-                    onChange={handleChange}
-                    className="border p-2"
-                />
+                    {/* GRID SECTION */}
+                    <div className="grid md:grid-cols-2 gap-4">
 
-                <select
-                    name="jobType"
-                    value={formData.jobType}
-                    onChange={handleChange}
-                    className="border p-2 "
-                >
-                    <option className="text-black" value="full-time">Full Time</option>
-                    <option className="text-black" value="part-time">Part Time</option>
-                    <option className="text-black" value="internship">Internship</option>
-                </select>
+                        <div>
+                            <label className="text-sm text-gray-600">Location</label>
+                            <input
+                                type="text"
+                                name="location"
+                                value={formData.location}
+                                onChange={handleChange}
+                                placeholder="e.g. Remote / Ahmedabad"
+                                className="w-full mt-1 p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-purple-500 outline-none"
+                                required
+                            />
+                        </div>
 
-                <button
-                    type="submit"
-                    className="bg-purple-600 text-white p-2 rounded"
-                >
-                    Post Job
-                </button>
+                        <div>
+                            <label className="text-sm text-gray-600">Salary</label>
+                            <input
+                                type="text"
+                                name="salary"
+                                value={formData.salary}
+                                onChange={handleChange}
+                                placeholder="e.g. 50000"
+                                className="w-full mt-1 p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-purple-500 outline-none"
+                            />
+                        </div>
 
-            </form>
+                    </div>
 
+                    {/* JOB TYPE */}
+                    <div>
+                        <label className="text-sm text-gray-600">Job Type</label>
+                        <select
+                            name="jobType"
+                            value={formData.jobType}
+                            onChange={handleChange}
+                            className="w-full mt-1 p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-purple-500 outline-none"
+                        >
+                            <option value="full-time">Full Time</option>
+                            <option value="part-time">Part Time</option>
+                            <option value="internship">Internship</option>
+                        </select>
+                    </div>
+
+                    {/* SKILLS */}
+                    <div>
+                        <label className="text-sm text-gray-600">Skills</label>
+                        <input
+                            type="text"
+                            name="skills"
+                            value={formData.skills}
+                            onChange={handleChange}
+                            placeholder="React, Node.js, MongoDB"
+                            className="w-full mt-1 p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-purple-500 outline-none"
+                        />
+                        <p className="text-xs text-gray-400 mt-1">
+                            Separate skills with commas
+                        </p>
+                    </div>
+
+                    {/* BUTTON */}
+                    <button
+                        type="submit"
+                        className="
+                            mt-4 
+                            bg-purple-600 
+                            text-white 
+                            py-3 
+                            rounded-xl 
+                            font-medium
+                            hover:bg-purple-700 
+                            transition
+                        "
+                    >
+                        Post Job 🚀
+                    </button>
+
+                </form>
+            </div>
         </div>
     );
 };

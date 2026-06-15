@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "../api/axios";
-
+import { useNavigate } from "react-router-dom";
 function MyApplications() {
+
+    const navigate = useNavigate();
 
     const [applications, setApplications] = useState([]);
 
@@ -39,16 +41,16 @@ function MyApplications() {
             ) : (
                 <div className="space-y-4">
                     {applications.map((app) => (
-                        <div
+                        app.job && (
+                            <div
                             key={app._id}
-                            className="border border-gray-300 rounded-lg p-6 shadow-sm bg-white hover:shadow-md transition"
-                        >
-                            <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
+                            className="border border-gray-300 rounded-lg p-6 shadow-sm bg-white hover:shadow-md transition">
+                            <div className="flex flex-col md:flex-row justify-between items-start md:items-center" onClick={()=>navigate(`/jobs/${app.job._id}`)} style={{cursor:"pointer"}}>
                                 <div>
                                     <h2 className="text-xl font-semibold text-purple-600">
                                         {app.job.title}
                                     </h2>
-                                    <p className="text-gray-700">{app.job.company}</p>
+                                    <p className="text-gray-700">{app.job.company?.name}</p>
                                     <p className="text-sm text-gray-500">{app.job.location}</p>
                                 </div>
 
@@ -59,6 +61,7 @@ function MyApplications() {
                                 </span>
                             </div>
                         </div>
+                        )
                     ))}
                 </div>
             )}

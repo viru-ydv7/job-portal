@@ -20,9 +20,30 @@ const userSchema = new mongoose.Schema(
 
         role: {
             type: String,
-            enum: ["candidate", "recruiter"],
-            default: "candidate",
+            enum: ["admin", "recruiter"],
         },
+        company:{
+            type:mongoose.Schema.Types.ObjectId,
+            ref:"Company"
+        },
+        emailVerified:{
+            type:Boolean,
+            default:false
+        },
+
+        otp:{
+            type:String,
+            default:null
+        },
+
+        otpExpiry:{
+            type:Date,
+            default:null
+        },
+        resetVerified: {
+            type: Boolean,
+            default: false
+        }
     },
     {
         timestamps:true,

@@ -1,107 +1,93 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import API from "../api/axios";
 import { useNavigate } from "react-router-dom";
-import API from "../api/axios"; // make sure this points to your axios instance
-import Navbar from "../components/Navbar";
 
 function Register() {
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [role, setRole] = useState("candidate");
-    const [error, setError] = useState("");      // For showing errors
-    const [success, setSuccess] = useState("");  // For showing success
-    const navigate = useNavigate();
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError("");
-        setSuccess("");
+  const navigate = useNavigate();
 
-        try {
-            const response = await API.post("/auth/register", {
-                name,
-                email,
-                password,
-                role,
-            });
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
-            setSuccess("Registration successful! Redirecting to login...");
-            
-            // Optional: redirect after 1.5 seconds
-            setTimeout(() => {
-                navigate("/login");
-            }, 1500);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-            // Clear form
-            setName("");
-            setEmail("");
-            setPassword("");
-            setRole("candidate");
-        } catch (err) {
-            setError(err.response?.data?.message || "Registration failed");
-        }
-    };
+    try {
+      await API.post("/auth/candidate/register", form);
+      alert("OTP sent successfully");
+      navigate("/verify-otp", {
+          state: {
+              email: form.email,
+              role: "candidate"
+          }
+      });
+    } catch (err) {
+      alert(err.response?.data?.message || "Error");
+    }
+  };
 
-    return (
-        <div className="flex flex-col  min-h-[calc(100vh-64px)]">
+  return (
+    <div className="min-h-[calc(100vh-64px)]
+    overflow-hidden
+    flex
+    items-center
+    justify-center
+    bg-gradient-to-br
+    from-white
+    via-purple-50
+    to-gray-100">
 
-            <div className="flex-1 flex items-center justify-center bg-gray-100">
-                <div className="bg-white p-8 rounded-2xl shadow-md w-full max-w-md">
-                    <h2 className="text-2xl font-bold text-center mb-6">Register</h2>
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-md bg-white p-8 rounded-2xl shadow-xl border border-purple-100"
+      >
+        <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+          Candidate Register
+        </h2>
 
-                    {/* Error / Success Messages */}
-                    {error && <div className="text-red-500 mb-2 text-center">{error}</div>}
-                    {success && <div className="text-green-600 mb-2 text-center">{success}</div>}
+        <div className="flex flex-col gap-4">
 
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        <input
-                            type="text"
-                            placeholder="Name"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            className="w-full border px-4 py-2 rounded-lg"
-                            required
-                        />
+          <input
+            name="name"
+            placeholder="Full Name"
+            onChange={handleChange}
+            className="p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-purple-500 outline-none"
+            required
+          />
 
-                        <input
-                            type="email"
-                            placeholder="Email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            className="w-full border px-4 py-2 rounded-lg"
-                            required
-                        />
+          <input
+            name="email"
+            placeholder="Email"
+            onChange={handleChange}
+            className="p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-purple-500 outline-none"
+            required
+          />
 
-                        <input
-                            type="password"
-                            placeholder="Password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="w-full border px-4 py-2 rounded-lg"
-                            required
-                        />
+          <input
+            name="password"
+            type="password"
+            placeholder="Password"
+            onChange={handleChange}
+            className="p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-purple-500 outline-none"
+            required
+          />
 
-                        <select
-                            value={role}
-                            onChange={(e) => setRole(e.target.value)}
-                            className="w-full border px-4 py-2 rounded-lg"
-                            required
-                        >
-                            <option value="candidate">Candidate</option>
-                            <option value="recruiter">Recruiter</option>
-                        </select>
+          <button
+            className="bg-purple-600 text-white py-3 rounded-xl hover:bg-purple-700 transition font-medium"
+          >
+            Register
+          </button>
 
-                        <button
-                            type="submit"
-                            className="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 transition"
-                        >
-                            Register
-                        </button>
-                    </form>
-                </div>
-            </div>
         </div>
-    );
+      </form>
+    </div>
+  );
 }
 
 export default Register;

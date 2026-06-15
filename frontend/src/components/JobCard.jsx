@@ -8,13 +8,41 @@ function JobCard({ job }) {
     };
 
     return (
-        <div 
+        <div
             onClick={handleClick}
-            className="border border-gray-300 p-6 mb-4 rounded-lg cursor-pointer hover:shadow-lg hover:border-purple-600 transition min-h-[150px] flex flex-col justify-between"
+            className="
+                cursor-pointer
+                rounded-2xl 
+                bg-gradient-to-br from-white to-purple-50
+                border border-purple-100 
+                p-5
+
+                transform transition-all duration-300 ease-in-out
+                hover:-translate-y-2 hover:scale-[1.02] hover:shadow-2xl hover:border-purple-500
+            "
         >
-            <h3 className="text-xl font-semibold text-purple-600">{job.title}</h3>
-            <p className="text-gray-700 text-base mt-2">{job.company}</p>
-            <p className="text-gray-500 mt-1">{job.location}</p>
+            {/* 🔹 TITLE */}
+            <h3 className="text-xl font-semibold text-gray-800">
+                {job.title}
+            </h3>
+
+            {/* 🔹 COMPANY */}
+            <p className="text-purple-600 text-sm mt-1 font-medium">
+                {job.company?.name || "Company"}
+            </p>
+
+            {/* 🔹 INFO */}
+            <div className="mt-4 text-sm text-gray-500 space-y-1">
+                <p>📍 {job.location}</p>
+                {job.salary && <p>💰 ₹{job.salary}</p>}
+            </div>
+
+            {/* 🔹 FOOTER */}
+            <div className="mt-6 pt-3 border-t border-purple-100 flex justify-between items-center">
+                <span className="text-xs text-purple-500 font-medium">
+                    {job.jobType || "Full Time"}
+                </span>
+            </div>
         </div>
     );
 }

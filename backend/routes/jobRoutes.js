@@ -2,24 +2,30 @@ const express = require("express");
 const protect = require("../middlewares/authMiddleware");
 const {recruiterOnly,candidateOnly} = require("../middlewares/roleMiddleware");
 const router = express.Router()
-const {createJob,getAllJobs,getJobById,getMyJobs} = require("../controllers/jobController");
-router.post('/create-job',protect , recruiterOnly,createJob);
+const {createJob,getAllJobs,getJobById,getMyJobs,getCompanyJobs , deleteJob , updateJob} = require("../controllers/jobController");
+
 
 router.post(
     "/create-job",
     protect,
     recruiterOnly,
-    (req, res, next) => {
-        console.log("✅ ENTERED JOB CONTROLLER");
-        next();
-    },
+    // (req, res, next) => {
+    //     console.log("✅ ENTERED JOB CONTROLLER");
+    //     next();
+    // },
     createJob
 );
 
 router.get(
     "/all",
-    protect,
     getAllJobs
+)
+
+router.get(
+    "/my-company-jobs",
+    protect,
+    recruiterOnly,
+    getCompanyJobs
 )
 
 router.get(
@@ -31,9 +37,20 @@ router.get(
 
 router.get(
     "/:id",
-    protect,
     getJobById
 )
 
+router.delete(
+    "/:id",
+    protect,
+    recruiterOnly,
+    deleteJob
+)
 
+router.put(
+    "/:id",
+    protect,
+    recruiterOnly,
+    updateJob
+)
 module.exports = router;
