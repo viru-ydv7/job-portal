@@ -9,6 +9,13 @@ app.use(cors());
 app.use(express.json());
 const inviteRoutes = require("./routes/inviteRoutes");
 const aiRoutes = require("./routes/aiRoutes");
+app.get("/", (req, res) => {
+    res.json({
+        success: true,
+        message: "CareerNest API is running 🚀"
+    });
+});
+
 app.use("/api/ai", aiRoutes);
 const resumeRoutes =require("./routes/resumeRoutes");
 app.use("/api/resume", resumeRoutes);
@@ -19,12 +26,6 @@ app.use('/api/auth',authRoutes);
 app.use('/api/invites', inviteRoutes);
 
 
-app.get("/", (req, res) => {
-    res.json({
-        success: true,
-        message: "CareerNest API is running 🚀"
-    });
-});
 
 app.use("/uploads", express.static("uploads"));
 
