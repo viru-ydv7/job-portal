@@ -1,5 +1,11 @@
 require("dotenv").config({ path: "./.env" });
 
+
+const fs = require("fs");
+
+if (!fs.existsSync("uploads")) {
+    fs.mkdirSync("uploads");
+}
 const express = require('express');
 const connectDB = require("./config/db");
 const applicationRoutes = require('./routes/applicationRoutes');
