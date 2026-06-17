@@ -125,9 +125,12 @@ const registerCandidate = async (req, res) => {
             Date.now() + 5*60*1000
         );
 
-    await existing.save();
-
-    await sendOTP(email, otp);
+        console.log("Register request:", email);
+        console.log("Generated OTP:", otp);
+        await existing.save();
+        console.log("Sending OTP to:", email);
+        await sendOTP(email, otp);
+        console.log("OTP sent successfully");
 
     return res.status(200).json({
         success:true,
